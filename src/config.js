@@ -10,7 +10,7 @@ exports.defaults = function() {
 
 
 exports.placeholder = function () {
-  var ph = "\n  # minifyJS:                     # Configuration for minifying/cleaning js using the\n" +
+  var ph = "\n\n  # minifyJS:                     # Configuration for minifying/cleaning js using the\n" +
      "                                  # --minify flag\n" +
      "    # exclude:[/\\.min\\./]         # List of string paths and regexes to match files to exclude\n" +
      "                                  # when running minification. Any path with \".min.\" in its name,\n" +
