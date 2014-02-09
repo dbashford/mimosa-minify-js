@@ -1,6 +1,6 @@
 {
   "name": "mimosa-minify-js",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "homepage": "http://www.mimosa.io",
   "author": "David Bashford",
   "description": "JS Minification module w/source maps for Mimosa browser development workflow tool",
@@ -28,15 +28,11 @@
   ],
   "dependencies": {
     "uglify-js": "2.4.3",
-    "wrench":"1.5.1",
-    "logmimosa": "0.6.0"
+    "wrench":"1.5.6"
   },
   "license": "MIT",
   "engines": {
     "node": ">=0.8"
   },
-  "main": "./src/index",
-  "scripts": {
-    "prepublish": "mimosa build"
-  }
+  "main": "./src/index"
 }

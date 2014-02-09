@@ -2,8 +2,7 @@ var fs = require( "fs" )
   , path = require( "path" )
   , wrench = require( "wrench" )
   , uglify = require( "uglify-js" )
-  , logger = require( 'logmimosa' );
-
+  , logger = null;
 
 var _cleanUpSourceMaps = function( config, options, next ) {
   var hasFiles = options.files && options.files.length > 0;
@@ -162,6 +161,7 @@ var _minifyJS = function( config, options, next ) {
 
 exports.registration = function ( config, register ) {
   if ( config.isMinify ) {
+    logger = config.log;
     var e = config.extensions;
     register( ['add','update','buildFile'],      'beforeWrite', _minifyJS, e.javascript );
     register( ['add','update','buildExtension'], 'beforeWrite', _minifyJS, e.template );
