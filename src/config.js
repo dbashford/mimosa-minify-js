@@ -10,13 +10,13 @@ exports.defaults = function() {
 
 
 exports.placeholder = function () {
-  var ph = "\n\n  # minifyJS:                     # Configuration for minifying/cleaning js using the\n" +
-     "                                  # --minify flag\n" +
-     "    # exclude:[/\\.min\\./]         # List of string paths and regexes to match files to exclude\n" +
-     "                                  # when running minification. Any path with \".min.\" in its name,\n" +
-     "                                  # is assumed to already be minified and is ignored by default.\n" +
-     "                                  # Paths can be relative to the watch.compiledDir, or absolute. \n" +
-     "                                  # Paths are to compiled files,  so '.js' rather than '.coffee'\n\n";
+  var ph = "\n\n  minifyJS:                     # Configuration for minifying/cleaning js using the\n" +
+     "                                # --minify flag\n" +
+     "    exclude:[/\\.min\\./]         # List of string paths and regexes to match files to exclude\n" +
+     "                                # when running minification. Any path with \".min.\" in its name,\n" +
+     "                                # is assumed to already be minified and is ignored by default.\n" +
+     "                                # Paths can be relative to the watch.compiledDir, or absolute. \n" +
+     "                                # Paths are to compiled files,  so '.js' rather than '.coffee'\n\n";
 
   return ph;
 };

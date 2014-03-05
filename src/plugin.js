@@ -1,8 +1,17 @@
+/* eslint strict:0 */
+
 var fs = require( "fs" )
   , path = require( "path" )
   , wrench = require( "wrench" )
   , uglify = require( "uglify-js" )
   , logger = null;
+
+var _buildSourceMapMetadata = function ( config, file ) {
+  var extName = path.extname( file.inputFileName );
+  file.sourceMapName = file.inputFileName.replace(extName, ".js.map")
+    .replace(config.watch.sourceDir, config.watch.compiledDir);
+  file.sourceName = file.inputFileName.replace(config.watch.sourceDir, config.watch.compiledDir) + ".src";
+};
 
 var _cleanUpSourceMaps = function( config, options, next ) {
   var hasFiles = options.files && options.files.length > 0;
@@ -27,13 +36,6 @@ var _makeDirectory = function ( dir ) {
   }
 };
 
-var _buildSourceMapMetadata = function ( config, file ) {
-  var extName = path.extname( file.inputFileName );
-  file.sourceMapName = file.inputFileName.replace(extName, ".js.map")
-    .replace(config.watch.sourceDir, config.watch.compiledDir);
-  file.sourceName = file.inputFileName.replace(config.watch.sourceDir, config.watch.compiledDir) + ".src";
-};
-
 var _writeOriginalSource = function( config, file ) {
   _buildSourceMapMetadata( config, file );
   _makeDirectory( path.dirname( file.sourceName ) );
@@ -48,10 +50,8 @@ var _performJSMinify = function (config, file) {
   var source = file.outputFileText
     , inFileName = file.inputFileName
     , outFileName = file.outputFileName
-    , rootName = outFileName.replace( path.extname( outFileName ), '' )
-    , mapName = "#{rootName}.map"
     , createSourceMap = !config.isBuild && file.inputFileName
-    , stream, source_map, mapInfo;
+    , stream, sourceMap, mapInfo;
 
   try {
     if ( createSourceMap ) {
@@ -64,24 +64,24 @@ var _performJSMinify = function (config, file) {
         mapSettings.orig = JSON.parse( file.sourceMap );
       }
 
-      source_map = uglify.SourceMap( mapSettings );
-      stream = uglify.OutputStream( {source_map: source_map} );
+      sourceMap = uglify.SourceMap( mapSettings );
+      stream = uglify.OutputStream( {source_map: sourceMap} );
     } else {
       stream = uglify.OutputStream();
     }
 
-    var toplevel_ast = uglify.parse( source, {filename:outFileName} );
-    toplevel_ast.figure_out_scope();
+    var toplevelAst = uglify.parse( source, {filename:outFileName} );
+    toplevelAst.figure_out_scope();
     var compressor = uglify.Compressor( {warnings:false} );
-    var compressed_ast = toplevel_ast.transform( compressor );
-    compressed_ast.figure_out_scope();
-    compressed_ast.compute_char_frequency();
-    compressed_ast.mangle_names( {except:[ 'require', 'requirejs', 'define', 'exports', 'module' ]} );
-    compressed_ast.print( stream );
-    var code = stream+"";
+    var compressedAst = toplevelAst.transform( compressor );
+    compressedAst.figure_out_scope();
+    compressedAst.compute_char_frequency();
+    compressedAst.mangle_names( {except:[ "require", "requirejs", "define", "exports", "module" ]} );
+    compressedAst.print( stream );
+    var code = stream + "";
 
     if ( createSourceMap ) {
-      var sourceMapJSON = JSON.parse( source_map.toString() );
+      var sourceMapJSON = JSON.parse( sourceMap.toString() );
 
       // source map not already created, so sourceMap metadata needs to be created
       // and source needs to be written
@@ -91,11 +91,11 @@ var _performJSMinify = function (config, file) {
       }
 
       // @ is deprecated but # not widely supported in current release browsers
-      code += '\n/*\n//@ sourceMappingURL=' + path.basename( file.sourceMapName );
+      code += "\n/*\n//@ sourceMappingURL=" + path.basename( file.sourceMapName );
       code += "\n*/\n";
 
-      var sourceMapRoot = inFileName.replace( path.basename( inFileName ), '' );
-      sourceMapRoot = sourceMapRoot.replace( config.watch.sourceDir, '' );
+      var sourceMapRoot = inFileName.replace( path.basename( inFileName ), "" );
+      sourceMapRoot = sourceMapRoot.replace( config.watch.sourceDir, "" );
       sourceMapRoot = sourceMapRoot.slice( 0, -1 );
 
       sourceMapJSON.sourceRoot = sourceMapRoot;
@@ -152,7 +152,7 @@ var _minifyJS = function( config, options, next ) {
       }
     }
 
-    if ( i === options.files.length-1 ) {
+    if ( i === options.files.length - 1 ) {
       done();
     }
   });
@@ -163,8 +163,8 @@ exports.registration = function ( config, register ) {
   if ( config.isMinify ) {
     logger = config.log;
     var e = config.extensions;
-    register( ['add','update','buildFile'],      'beforeWrite', _minifyJS, e.javascript );
-    register( ['add','update','buildExtension'], 'beforeWrite', _minifyJS, e.template );
-    register( ['cleanFile'], 'delete', _cleanUpSourceMaps, ["js"] );
+    register( ["add","update","buildFile"],      "beforeWrite", _minifyJS, e.javascript );
+    register( ["add","update","buildExtension"], "beforeWrite", _minifyJS, e.template );
+    register( ["cleanFile"], "delete", _cleanUpSourceMaps, ["js"] );
   }
 };
