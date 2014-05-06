@@ -2,8 +2,7 @@
 
 var fs = require( "fs" )
   , path = require( "path" )
-  , wrench = require( "wrench" )
-  , uglify = require( "uglify-js" )
+  , uglify = null
   , logger = null;
 
 var _buildSourceMapMetadata = function ( config, file ) {
@@ -32,6 +31,7 @@ var _cleanUpSourceMaps = function( config, options, next ) {
 var _makeDirectory = function ( dir ) {
   if ( !fs.existsSync( dir ) ) {
     logger.debug("Making folder [[ " + dir + " ]]");
+    var wrench = require( "wrench" );
     wrench.mkdirSyncRecursive(dir, 0777);
   }
 };
@@ -52,6 +52,10 @@ var _performJSMinify = function (config, file) {
     , outFileName = file.outputFileName
     , createSourceMap = !config.isBuild && file.inputFileName
     , stream, sourceMap, mapInfo;
+
+  if ( !uglify ) {
+    uglify = require( "uglify-js" );
+  }
 
   try {
     if ( createSourceMap ) {
@@ -157,7 +161,6 @@ var _minifyJS = function( config, options, next ) {
     }
   });
 };
-
 
 exports.registration = function ( config, register ) {
   if ( config.isMinify ) {
