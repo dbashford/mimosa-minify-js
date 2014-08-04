@@ -80,7 +80,10 @@ var _performJSMinify = function (config, file) {
     var compressedAst = toplevelAst.transform( compressor );
     compressedAst.figure_out_scope();
     compressedAst.compute_char_frequency();
-    compressedAst.mangle_names( {except:[ "require", "requirejs", "define", "exports", "module" ]} );
+    if(config.minifyJS.mangleNames){
+      compressedAst.mangle_names( {except:[ "require", "requirejs", "define", "exports", "module" ]} );
+    }
+
     compressedAst.print( stream );
     var code = stream + "";
 
