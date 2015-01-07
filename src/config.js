@@ -3,14 +3,14 @@
 exports.defaults = function() {
   return {
     minifyJS: {
-      exclude:[/\.min\./],
+      exclude: [/\.min\./],
       mangleNames: true
     }
   };
 };
 
 
-exports.placeholder = function () {
+exports.placeholder = function() {
   var ph = "\n\n  minifyJS:                     # Configuration for minifying/cleaning js using the\n" +
      "                                # --minify flag\n" +
      "    exclude:[/\\.min\\./]       # List of string paths and regexes to match files to exclude\n" +
@@ -29,6 +29,6 @@ exports.validate = function( config, validators )  {
   if ( validators.ifExistsIsObject( errors, "minifyCSS config", config.minifyJS ) ) {
     validators.ifExistsFileExcludeWithRegexAndString( errors, "minifyJS.exclude", config.minifyJS, config.watch.compiledDir );
   }
-  validators.ifExistsIsBoolean(errors, "minifyJS.mangleNames", config.minifyJS.mangleNames);
+  validators.ifExistsIsBoolean( errors, "minifyJS.mangleNames", config.minifyJS.mangleNames );
   return errors;
 };
