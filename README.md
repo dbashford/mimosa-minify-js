@@ -17,7 +17,12 @@ If minifying a file that has an external sourceMap the minifier will use the sou
 
 ## Source Maps
 
+Source maps will be generated when running `mimosa watch`.  This module will also check if an existing source map is in place and if it is, will attempt to read it in and use is to get multi-step source maps. This way you can have a source map that goes from minified JavaScript => JavaScript => CoffeeScript.
+
+As of `v2.0.0` of this module, this module no longer writes `.map` files, instead it embeds all source map information inline via a base64 encoded string.
+
 Source maps will not be generated if running `mimosa build`.
+
 
 # Default Config
 
