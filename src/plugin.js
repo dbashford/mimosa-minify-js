@@ -71,9 +71,9 @@ var _performJSMinify = function ( config, file ) {
 
     if ( createSourceMap ) {
       var sourceMapJSON = JSON.parse( sourceMap.toString() );
-      sourceMapJSON.sources[0] = file.inputFileName;
+      sourceMapJSON.sources[0] = inFileName;
       sourceMapJSON.sourcesContent = [file.inputFileText];
-      sourceMapJSON.file = file.outputFileName;
+      sourceMapJSON.file = outFileName;
 
       var base64SourceMap = new Buffer( JSON.stringify( sourceMapJSON ) ).toString( "base64" );
       var datauri = "data:application/json;base64," + base64SourceMap;
